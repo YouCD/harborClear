@@ -29,7 +29,6 @@ type Repo struct {
 }
 
 func Core() {
-
 	for _, project := range config.Projects {
 
 		ProjectInfo, err := h.GetProjectByName(project)
@@ -51,11 +50,10 @@ func deleteHandler() {
 			switch {
 			case config.KeepSave:
 				if len(r.Artifacts) == 1 {
-					log.Infof("%-8s Project: %-10s RepoName: %-50s Tag: %s", "KeepSave", i, r.Name, r.Artifacts[0].Tag)
+					log.Infof("%-10s Project: %-8s RepoName: %-50s Tag: %s", "KeepSave", i, r.Name, r.Artifacts[0].Tag)
 				} else if len(r.Artifacts) > 1 {
 					loopDelete(i, r)
 				}
-
 			case !config.KeepSave:
 				loopDelete(i, r)
 			}
@@ -64,6 +62,7 @@ func deleteHandler() {
 }
 
 func loopDelete(project string, r *Repo) {
+	var ArtifactList []Artifact
 	for _, image := range r.Artifacts {
 		nowTime := time.Now()
 		startTime := nowTime.AddDate(0, -config.Month, 0)
@@ -74,8 +73,12 @@ func loopDelete(project string, r *Repo) {
 					log.Error(err)
 				}
 			}
-			log.Warnf("%-8s Project: %-10s RepoName: %-50s Tag: %s", "Delete", project, r.Name, image.Tag)
+			ArtifactList=append(ArtifactList, image)
+			log.Warnf("%-10s Project: %-8s RepoName: %-50s Tag: %s", "Delete", project, r.Name, image.Tag)
 		}
+	}
+	if len(ArtifactList) > 0 {
+		log.Infof("%-10s Project: %-8s RepoName: %-50s \033[31mTotal:\033[0m %d", "Delete", project,  r.Name, len(ArtifactList))
 	}
 
 }
@@ -103,7 +106,7 @@ func getRepos(project string, pageSize int) {
 func getRepo(project, repoName string, ArtifactCount int, wg *sync.WaitGroup) {
 	var tempRepo Repo
 	pSize := tools.GetPageSize(ArtifactCount)
-	log.Infof("%-8s Project: %-10s RepoName: %-50s", "Scan", project, repoName)
+	log.Infof("%-10s Project: %-8s RepoName: %-50s", "Scan", project, repoName)
 	tempRepo.Name = repoName
 	tempRepo.Artifacts = getArtifacts(pSize, project, repoName)
 	//RepoChan <- &tempRepo
@@ -123,7 +126,7 @@ func getArtifacts(pageSize int, project, repoName string) (a []Artifact) {
 			var artifact = Artifact{
 				Digest:   v.Digest,
 				Tag:      v.Tags[0].Name,
-				PushTime: time.Time{},
+				PushTime: v.PushTime,
 			}
 			a = append(a, artifact)
 		}
