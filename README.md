@@ -13,6 +13,7 @@
 |`harborClear_HarborUser`|登入`harbor`的账户|`SOMEUSER`|
 |`harborClear_UserPassword`|登入`harbor`的密码|`SOME_PASSWORD`|
 |`harborClear_ClearFlag`|是否确认删除|`true`或`false`|
+|`harborClear_KeepSave`|是否保留1个|`true`或`false`|
 
 
 
@@ -29,6 +30,7 @@ export harborClear_HarborUrl=https://some.harbor.com
 export harborClear_HarborUser=admin
 export harborClear_UserPassword=harbor12345
 export harborClear_ClearFlag=true
+export harborClear_KeepSave=true
 ./harborClear
 
 ```

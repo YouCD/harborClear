@@ -15,6 +15,7 @@ var (
 	HarborUser         string
 	HarborUserPassword string
 	ClearFlag          bool
+	KeepSave           bool
 )
 
 func init() {
@@ -61,14 +62,14 @@ func init() {
 	HarborUser = user
 
 	pwd := os.Getenv("harborClear_UserPassword")
-	if user == "" {
+	if pwd == "" {
 		fmt.Println("请设置 harborClear_UserPassword 环境变量")
 		os.Exit(-1)
 	}
 	HarborUserPassword = pwd
 
 	flag := os.Getenv("harborClear_ClearFlag")
-	if user == "" {
+	if flag == "" {
 		fmt.Println("请设置 harborClear_ClearFlag 环境变量")
 		os.Exit(-1)
 	}
@@ -77,4 +78,16 @@ func init() {
 	} else {
 		ClearFlag = false
 	}
+
+	ks := os.Getenv("harborClear_KeepSave")
+	if ks == "" {
+		fmt.Println("请设置 harborClear_KeepSave 环境变量")
+		os.Exit(-1)
+	}
+	if strings.ToLower(ks) == "true" {
+		KeepSave = true
+	} else {
+		KeepSave = false
+	}
+
 }
