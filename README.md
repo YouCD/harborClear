@@ -1,5 +1,6 @@
 
 ## `harborClear` 
+[![Build Status](https://app.travis-ci.com/YouCD/harborClear.svg?branch=master)](https://app.travis-ci.com/YouCD/harborClear)
 `harborClear`是用于定期清理`harbor`的清理工具，配合`harbor2.0` 自动[垃圾清理] 可让`haobor`仅保存一定期限内的镜像，释放磁盘空间
 
 ## 变量说明
