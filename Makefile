@@ -2,12 +2,12 @@ GOCMD			:=$(shell which go)
 GOBUILD			:=$(GOCMD) build
 
 
-#IMPORT_PATH		:=go/harborClear/cmd
+IMPORT_PATH		:=go/harborClear/cmd
 BUILD_TIME		:=$(shell date "+%F %T")
 COMMIT_ID       :=$(shell git rev-parse HEAD)
 GO_VERSION      :=$(shell $(GOCMD) version)
-#VERSION			:=$(shell git describe --tags)
-VERSION			:=v0.1
+VERSION			:=$(shell git describe --tags)
+#VERSION			:=v0.1
 BUILD_USER		:=$(shell whoami)
 #FLAG			:="-X '${IMPORT_PATH}.buildTime=${BUILD_TIME}' -X '${IMPORT_PATH}.commitID=${COMMIT_ID}' -X '${IMPORT_PATH}.goVersion=${GO_VERSION}' -X '${IMPORT_PATH}.goVersion=${GO_VERSION}' -X '${IMPORT_PATH}.Version=${VERSION}' -X '${IMPORT_PATH}.buildUser=${BUILD_USER}'"
 

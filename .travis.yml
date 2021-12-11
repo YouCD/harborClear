@@ -16,4 +16,4 @@ deploy:
   on:
     repo: YouCD/harborClear
     # tag才触发发布
-#    tags: true
+    tags: true
