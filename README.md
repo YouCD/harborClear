@@ -18,7 +18,7 @@
 
 
 
-## expample
+## example
 
 ```sh
 # cat ops/harborClear.sh 
