@@ -5,16 +5,16 @@
 
 ## 变量说明
 
-|变量名|作用|值|
-|---|---|---|
-|`harborClear_Projects`|要清理的项目,多个用`,`隔开|`test`或`test,prod`|
-|`arborClear_KeepMonth`|要保留的期限,单位月|`1`或`10`|
-|`harborClear_Loglevel`|日志级别|`info`或`debug`|
-|`harborClear_HarborUrl`|`harbor`地址|`https://some.harbor.com`|
-|`harborClear_HarborUser`|登入`harbor`的账户|`SOMEUSER`|
-|`harborClear_UserPassword`|登入`harbor`的密码|`SOME_PASSWORD`|
-|`harborClear_ClearFlag`|是否确认删除|`true`或`false`|
-|`harborClear_KeepSave`|是否保留1个|`true`或`false`|
+|变量名| 作用                          | 值                            |
+|---|-----------------------------|------------------------------|
+|`harborClear_Projects`| 要清理的项目,多个用`,`隔开             | `test`或`test,prod`           |
+|`harborClear_Loglevel`| 日志级别                        | `info`或`debug`               |
+|`harborClear_HarborUrl`| `harbor`地址                  | `https://some.harbor.com`    |
+|`harborClear_HarborUser`| 登入`harbor`的账户               | `SOMEUSER`                   |
+|`harborClear_UserPassword`| 登入`harbor`的密码               | `SOME_PASSWORD`              |
+|`harborClear_ClearFlag`| 是否确认删除                      | `true`或`false`  false:dryRun |
+|`harborClear_DelTagPrefix`| 指定要删除的tag前缀| 例如 `dev`                     |
+|`harborClear_RepoNamePrefix`| 指定要删除的repo前缀|                              |
 
 
 

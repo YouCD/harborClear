@@ -8,7 +8,8 @@ import (
 
 func main() {
 	log.Debugf("env harborClear_Projects     value: %s", config.Projects)
-	log.Debugf("env harborClear_KeepMonth    value: %d", config.Month)
+	log.Debugf("env harborClear_DelTagPrefix    value: %s", config.DelTagPrefix)
+	log.Debugf("env harborClear_RepoNamePrefix    value: %s", config.RepoNamePrefix)
 	log.Debugf("env harborClear_Loglevel     value: %s", config.Loglevel)
 	log.Debugf("env harborClear_HarborUrl    value: %s", config.HarborUrl)
 	log.Debugf("env harborClear_HarborUser   value: %s", config.HarborUser)

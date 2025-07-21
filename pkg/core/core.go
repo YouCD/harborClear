@@ -30,7 +30,6 @@ type Repo struct {
 
 func Core() {
 	for _, project := range config.Projects {
-
 		ProjectInfo, err := h.GetProjectByName(project)
 		if err != nil {
 			log.Error(err)
@@ -47,15 +46,21 @@ func Core() {
 func deleteHandler() {
 	for i, v := range ImageList {
 		for _, r := range v {
-			switch {
-			case config.KeepSave:
-				if len(r.Artifacts) == 1 {
-					log.Infof("%-10s Project: %-8s RepoName: %-50s Tag: %s", "KeepSave", i, r.Name, r.Artifacts[0].Tag)
-				} else if len(r.Artifacts) > 1 {
-					loopDelete(i, r)
+			if len(r.Artifacts) > 0 { // 多个tag 要处理
+				// 只有 config.RepoNamePrefix 的镜像会进行删除
+				var deleteFlag bool
+				for _, prefix := range config.RepoNamePrefix {
+					if strings.HasPrefix(r.Name, prefix) {
+						deleteFlag = true
+						break
+					}
 				}
-			case !config.KeepSave:
-				loopDelete(i, r)
+				if deleteFlag {
+					log.Warnf("%-10s Project: %-8s RepoName: %-50s ", "Match", i, r.Name)
+					loopDelete(i, r)
+				} else {
+					log.Infof("%-10s Project: %-8s RepoName: %-50s ", "KeepSave", i, r.Name)
+				}
 			}
 		}
 	}
@@ -63,22 +68,34 @@ func deleteHandler() {
 
 func loopDelete(project string, r *Repo) {
 	var ArtifactList []Artifact
+	var tags []string
 	for _, image := range r.Artifacts {
-		nowTime := time.Now()
-		startTime := nowTime.AddDate(0, -config.Month, 0)
-		if image.PushTime.Unix() < startTime.Unix() {
-			if config.ClearFlag {
-				err := h.DeleteArtifact(project, r.Name, image.Digest)
-				if err != nil {
-					log.Error(err)
+		if config.ClearFlag {
+			for _, prefix := range config.DelTagPrefix {
+				if strings.HasPrefix(image.Tag, prefix) {
+					log.Warnf("%-10s Project: %-8s RepoName: %-50s Tag: %s", "Delete", project, r.Name, image.Tag)
+					ArtifactList = append(ArtifactList, image)
+					tags = append(tags, image.Tag)
+					err := h.DeleteArtifact(project, r.Name, image.Digest)
+					if err != nil {
+						log.Error(err)
+					}
 				}
 			}
-			ArtifactList=append(ArtifactList, image)
-			log.Warnf("%-10s Project: %-8s RepoName: %-50s Tag: %s", "Delete", project, r.Name, image.Tag)
+
+		} else {
+			for _, prefix := range config.DelTagPrefix {
+				if strings.HasPrefix(image.Tag, prefix) {
+					log.Warnf("%-10s Project: %-8s RepoName: %-50s Tag: %s", "Delete.dryrun", project, r.Name, image.Tag)
+					ArtifactList = append(ArtifactList, image)
+					tags = append(tags, image.Tag)
+				}
+			}
 		}
+
 	}
 	if len(ArtifactList) > 0 {
-		log.Infof("%-10s Project: %-8s RepoName: %-50s \033[31mTotal:\033[0m %d", "Delete", project,  r.Name, len(ArtifactList))
+		log.Infof("%-10s Project: %-8s RepoName: %-50s \033[31mTotal:\033[0m %d  \u001B[31mtags\u001B[0m: %s", "Delete", project, r.Name, len(ArtifactList), strings.Join(tags, ","))
 	}
 
 }
@@ -122,13 +139,17 @@ func getArtifacts(pageSize int, project, repoName string) (a []Artifact) {
 			log.Error(err)
 		}
 		for _, v := range Artifacts {
-
-			var artifact = Artifact{
-				Digest:   v.Digest,
-				Tag:      v.Tags[0].Name,
-				PushTime: v.PushTime,
+			if len(v.Tags) > 0 {
+				var artifact = Artifact{
+					Digest:   v.Digest,
+					Tag:      v.Tags[0].Name,
+					PushTime: v.PushTime,
+				}
+				a = append(a, artifact)
+			} else {
+				log.Debugf("%-10s Project: %-8s RepoName: %-50s is null", "GetArtifacts", project, repoName)
 			}
-			a = append(a, artifact)
+
 		}
 
 	}
